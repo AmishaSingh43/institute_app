@@ -1,0 +1,457 @@
+  [1m[35m (138.8ms)[0m  [1m[35mCREATE DATABASE "institute_development" ENCODING = 'unicode'[0m
+  [1m[35m (96.3ms)[0m  [1m[35mCREATE DATABASE "institute_test" ENCODING = 'unicode'[0m
+  [1m[35m (7.7ms)[0m  [1m[35mCREATE TABLE "schema_migrations" ("version" character varying NOT NULL PRIMARY KEY)[0m
+  [1m[35m (5.6ms)[0m  [1m[35mCREATE TABLE "ar_internal_metadata" ("key" character varying NOT NULL PRIMARY KEY, "value" character varying, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL)[0m
+  [1m[35m (0.2ms)[0m  [1m[34mSELECT pg_try_advisory_lock(5473422555307600215)[0m
+  [1m[35m (0.6ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Migrating to CreateCategories (20211014142334)
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (6.5ms)[0m  [1m[35mCREATE TABLE "categories" ("id" bigserial primary key, "name" character varying, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL)[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.5ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ($1) RETURNING "version"[0m  [["version", "20211014142334"]]
+  [1m[36mTRANSACTION (1.2ms)[0m  [1m[35mCOMMIT[0m
+Migrating to CreateAdmins (20211014155146)
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (6.5ms)[0m  [1m[35mCREATE TABLE "admins" ("id" bigserial primary key, "name" character varying, "username" character varying, "email" character varying, "password_digest" character varying, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL)[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.5ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ($1) RETURNING "version"[0m  [["version", "20211014155146"]]
+  [1m[36mTRANSACTION (1.1ms)[0m  [1m[35mCOMMIT[0m
+Migrating to CreateCourses (20211015061039)
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (7.7ms)[0m  [1m[35mCREATE TABLE "courses" ("id" bigserial primary key, "name" character varying, "category_id" bigint NOT NULL, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL, CONSTRAINT "fk_rails_e072dca946"
+FOREIGN KEY ("category_id")
+  REFERENCES "categories" ("id")
+)[0m
+  [1m[35m (2.6ms)[0m  [1m[35mCREATE INDEX "index_courses_on_category_id" ON "courses" ("category_id")[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.4ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ($1) RETURNING "version"[0m  [["version", "20211015061039"]]
+  [1m[36mTRANSACTION (1.3ms)[0m  [1m[35mCOMMIT[0m
+Migrating to CreateStudents (20211015064920)
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (6.7ms)[0m  [1m[35mCREATE TABLE "students" ("id" bigserial primary key, "name" character varying, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL)[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.6ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ($1) RETURNING "version"[0m  [["version", "20211015064920"]]
+  [1m[36mTRANSACTION (1.1ms)[0m  [1m[35mCOMMIT[0m
+Migrating to CreateQuestionAnswers (20211015075328)
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (6.8ms)[0m  [1m[35mCREATE TABLE "question_answers" ("id" bigserial primary key, "question" text, "answer" integer, "options" text[] DEFAULT '{}', "point" integer DEFAULT 1, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL)[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.5ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ($1) RETURNING "version"[0m  [["version", "20211015075328"]]
+  [1m[36mTRANSACTION (1.0ms)[0m  [1m[35mCOMMIT[0m
+Migrating to CreateExams (20211015084926)
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (5.2ms)[0m  [1m[35mCREATE TABLE "exams" ("id" bigserial primary key, "question_answer_id" bigint NOT NULL, "course_id" bigint, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL, CONSTRAINT "fk_rails_7a5b264f87"
+FOREIGN KEY ("question_answer_id")
+  REFERENCES "question_answers" ("id")
+, CONSTRAINT "fk_rails_66aea76c6a"
+FOREIGN KEY ("course_id")
+  REFERENCES "courses" ("id")
+)[0m
+  [1m[35m (2.7ms)[0m  [1m[35mCREATE INDEX "index_exams_on_question_answer_id" ON "exams" ("question_answer_id")[0m
+  [1m[35m (2.7ms)[0m  [1m[35mCREATE INDEX "index_exams_on_course_id" ON "exams" ("course_id")[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.4ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ($1) RETURNING "version"[0m  [["version", "20211015084926"]]
+  [1m[36mTRANSACTION (1.4ms)[0m  [1m[35mCOMMIT[0m
+Migrating to CreateStudentCourses (20211015085432)
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (5.8ms)[0m  [1m[35mCREATE TABLE "student_courses" ("id" bigserial primary key, "student_id" bigint NOT NULL, "course_id" bigint NOT NULL, "status" integer, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL, CONSTRAINT "fk_rails_aab11897f1"
+FOREIGN KEY ("student_id")
+  REFERENCES "students" ("id")
+, CONSTRAINT "fk_rails_fee459e6de"
+FOREIGN KEY ("course_id")
+  REFERENCES "courses" ("id")
+)[0m
+  [1m[35m (3.0ms)[0m  [1m[35mCREATE INDEX "index_student_courses_on_student_id" ON "student_courses" ("student_id")[0m
+  [1m[35m (2.7ms)[0m  [1m[35mCREATE INDEX "index_student_courses_on_course_id" ON "student_courses" ("course_id")[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.4ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ($1) RETURNING "version"[0m  [["version", "20211015085432"]]
+  [1m[36mTRANSACTION (1.4ms)[0m  [1m[35mCOMMIT[0m
+Migrating to CreateAnswerSheets (20211015090157)
+  [1m[36mTRANSACTION (1.4ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (5.3ms)[0m  [1m[35mCREATE TABLE "answer_sheets" ("id" bigserial primary key, "student_course_id" bigint NOT NULL, "answer" integer, "correct_answer" integer, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL, CONSTRAINT "fk_rails_40d46196d8"
+FOREIGN KEY ("student_course_id")
+  REFERENCES "student_courses" ("id")
+)[0m
+  [1m[35m (3.0ms)[0m  [1m[35mCREATE INDEX "index_answer_sheets_on_student_course_id" ON "answer_sheets" ("student_course_id")[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.4ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ($1) RETURNING "version"[0m  [["version", "20211015090157"]]
+  [1m[36mTRANSACTION (1.6ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.4ms)[0m  [1m[34mSELECT "ar_internal_metadata".* FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = $1 LIMIT $2[0m  [["key", "environment"], ["LIMIT", 1]]
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mActiveRecord::InternalMetadata Create (0.6ms)[0m  [1m[32mINSERT INTO "ar_internal_metadata" ("key", "value", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "key"[0m  [["key", "environment"], ["value", "development"], ["created_at", "2024-01-10 19:21:01.729626"], ["updated_at", "2024-01-10 19:21:01.729626"]]
+  [1m[36mTRANSACTION (1.0ms)[0m  [1m[35mCOMMIT[0m
+  [1m[35m (0.3ms)[0m  [1m[34mSELECT pg_advisory_unlock(5473422555307600215)[0m
+  [1m[35m (0.5ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[35m (0.4ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mAdmin Exists? (0.5ms)[0m  [1m[34mSELECT 1 AS one FROM "admins" WHERE "admins"."email" = $1 LIMIT $2[0m  [["email", "admin@demo.com"], ["LIMIT", 1]]
+  [1m[36mAdmin Exists? (0.2ms)[0m  [1m[34mSELECT 1 AS one FROM "admins" WHERE "admins"."username" = $1 LIMIT $2[0m  [["username", "admin"], ["LIMIT", 1]]
+  [1m[36mAdmin Create (0.3ms)[0m  [1m[32mINSERT INTO "admins" ("username", "email", "password_digest", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5) RETURNING "id"[0m  [["username", "admin"], ["email", "admin@demo.com"], ["password_digest", "$2a$12$d1vIyy12Riyyjcyp1U1uQebtkE3V9/Hj3rq6uWkhpronDPl9BJHxS"], ["created_at", "2024-01-10 19:24:31.980170"], ["updated_at", "2024-01-10 19:24:31.980170"]]
+  [1m[36mTRANSACTION (2.2ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mCategory Create (0.4ms)[0m  [1m[32mINSERT INTO "categories" ("name", "created_at", "updated_at") VALUES ($1, $2, $3) RETURNING "id"[0m  [["name", "Mr. Jeannette Heidenreich"], ["created_at", "2024-01-10 19:24:32.947127"], ["updated_at", "2024-01-10 19:24:32.947127"]]
+  [1m[36mTRANSACTION (1.0ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mCategory Load (0.2ms)[0m  [1m[34mSELECT "categories".* FROM "categories" WHERE "categories"."id" = $1 ORDER BY "categories"."created_at" ASC LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mCourse Create (0.5ms)[0m  [1m[32mINSERT INTO "courses" ("name", "category_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["name", "Rico Lind"], ["category_id", 1], ["created_at", "2024-01-10 19:24:32.969019"], ["updated_at", "2024-01-10 19:24:32.969019"]]
+  [1m[36mTRANSACTION (1.0ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mCategory Load (0.2ms)[0m  [1m[34mSELECT "categories".* FROM "categories" WHERE "categories"."id" = $1 ORDER BY "categories"."created_at" ASC LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mCourse Create (0.3ms)[0m  [1m[32mINSERT INTO "courses" ("name", "category_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["name", "Gov. Simone Zieme"], ["category_id", 1], ["created_at", "2024-01-10 19:24:32.974508"], ["updated_at", "2024-01-10 19:24:32.974508"]]
+  [1m[36mTRANSACTION (1.0ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mCategory Load (0.2ms)[0m  [1m[34mSELECT "categories".* FROM "categories" WHERE "categories"."id" = $1 ORDER BY "categories"."created_at" ASC LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mCourse Create (0.2ms)[0m  [1m[32mINSERT INTO "courses" ("name", "category_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["name", "Ramon Raynor"], ["category_id", 1], ["created_at", "2024-01-10 19:24:32.979345"], ["updated_at", "2024-01-10 19:24:32.979345"]]
+  [1m[36mTRANSACTION (1.0ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mCategory Load (0.2ms)[0m  [1m[34mSELECT "categories".* FROM "categories" WHERE "categories"."id" = $1 ORDER BY "categories"."created_at" ASC LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mCourse Create (0.3ms)[0m  [1m[32mINSERT INTO "courses" ("name", "category_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["name", "Antwan Skiles"], ["category_id", 1], ["created_at", "2024-01-10 19:24:32.984181"], ["updated_at", "2024-01-10 19:24:32.984181"]]
+  [1m[36mTRANSACTION (1.0ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mCategory Load (0.2ms)[0m  [1m[34mSELECT "categories".* FROM "categories" WHERE "categories"."id" = $1 ORDER BY "categories"."created_at" ASC LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mCourse Create (0.3ms)[0m  [1m[32mINSERT INTO "courses" ("name", "category_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["name", "Maple Ferry"], ["category_id", 1], ["created_at", "2024-01-10 19:24:32.988919"], ["updated_at", "2024-01-10 19:24:32.988919"]]
+  [1m[36mTRANSACTION (1.0ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mQuestionAnswer Create (0.5ms)[0m  [1m[32mINSERT INTO "question_answers" ("question", "answer", "options", "point", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5, $6) RETURNING "id"[0m  [["question", "Omnis recusandae doloremque et?"], ["answer", 3], ["options", "{odit,sed,necessitatibus,suscipit}"], ["point", 4], ["created_at", "2024-01-10 19:24:33.003637"], ["updated_at", "2024-01-10 19:24:33.003637"]]
+  [1m[36mTRANSACTION (0.9ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mQuestionAnswer Create (0.2ms)[0m  [1m[32mINSERT INTO "question_answers" ("question", "answer", "options", "point", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5, $6) RETURNING "id"[0m  [["question", "Fuga nobis id autem?"], ["answer", 2], ["options", "{ratione,et,est,qui}"], ["point", 4], ["created_at", "2024-01-10 19:24:33.008015"], ["updated_at", "2024-01-10 19:24:33.008015"]]
+  [1m[36mTRANSACTION (0.9ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mQuestionAnswer Create (0.2ms)[0m  [1m[32mINSERT INTO "question_answers" ("question", "answer", "options", "point", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5, $6) RETURNING "id"[0m  [["question", "Quam accusantium et delectus?"], ["answer", 2], ["options", "{sint,est,quisquam,praesentium}"], ["point", 5], ["created_at", "2024-01-10 19:24:33.011478"], ["updated_at", "2024-01-10 19:24:33.011478"]]
+  [1m[36mTRANSACTION (0.9ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mQuestionAnswer Create (0.2ms)[0m  [1m[32mINSERT INTO "question_answers" ("question", "answer", "options", "point", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5, $6) RETURNING "id"[0m  [["question", "Ad incidunt tempore autem?"], ["answer", 3], ["options", "{consequuntur,maiores,eius,eligendi}"], ["point", 4], ["created_at", "2024-01-10 19:24:33.014736"], ["updated_at", "2024-01-10 19:24:33.014736"]]
+  [1m[36mTRANSACTION (1.0ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mQuestionAnswer Create (0.2ms)[0m  [1m[32mINSERT INTO "question_answers" ("question", "answer", "options", "point", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5, $6) RETURNING "id"[0m  [["question", "Quae nulla inventore molestiae?"], ["answer", 1], ["options", "{aut,totam,nesciunt,vel}"], ["point", 5], ["created_at", "2024-01-10 19:24:33.018055"], ["updated_at", "2024-01-10 19:24:33.018055"]]
+  [1m[36mTRANSACTION (0.9ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mQuestionAnswer Create (0.2ms)[0m  [1m[32mINSERT INTO "question_answers" ("question", "answer", "options", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5) RETURNING "id"[0m  [["question", "Quo est maxime et?"], ["answer", 3], ["options", "{provident,eos,similique,repellendus}"], ["created_at", "2024-01-10 19:24:33.021616"], ["updated_at", "2024-01-10 19:24:33.021616"]]
+  [1m[36mTRANSACTION (0.9ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mQuestionAnswer Create (0.2ms)[0m  [1m[32mINSERT INTO "question_answers" ("question", "answer", "options", "point", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5, $6) RETURNING "id"[0m  [["question", "Earum porro similique delectus?"], ["answer", 1], ["options", "{sapiente,dolor,earum,nam}"], ["point", 3], ["created_at", "2024-01-10 19:24:33.025086"], ["updated_at", "2024-01-10 19:24:33.025086"]]
+  [1m[36mTRANSACTION (1.0ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mQuestionAnswer Create (0.3ms)[0m  [1m[32mINSERT INTO "question_answers" ("question", "answer", "options", "point", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5, $6) RETURNING "id"[0m  [["question", "Id excepturi autem dicta?"], ["answer", 2], ["options", "{non,distinctio,error,tempore}"], ["point", 5], ["created_at", "2024-01-10 19:24:33.028607"], ["updated_at", "2024-01-10 19:24:33.028607"]]
+  [1m[36mTRANSACTION (0.9ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mQuestionAnswer Create (0.2ms)[0m  [1m[32mINSERT INTO "question_answers" ("question", "answer", "options", "point", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5, $6) RETURNING "id"[0m  [["question", "Provident et voluptatum et?"], ["answer", 3], ["options", "{inventore,recusandae,error,maiores}"], ["point", 5], ["created_at", "2024-01-10 19:24:33.032200"], ["updated_at", "2024-01-10 19:24:33.032200"]]
+  [1m[36mTRANSACTION (1.0ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mQuestionAnswer Create (0.3ms)[0m  [1m[32mINSERT INTO "question_answers" ("question", "answer", "options", "point", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5, $6) RETURNING "id"[0m  [["question", "Voluptatem pariatur quo explicabo?"], ["answer", 1], ["options", "{incidunt,perferendis,ullam,maxime}"], ["point", 5], ["created_at", "2024-01-10 19:24:33.035806"], ["updated_at", "2024-01-10 19:24:33.035806"]]
+  [1m[36mTRANSACTION (1.0ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mQuestionAnswer Create (0.3ms)[0m  [1m[32mINSERT INTO "question_answers" ("question", "answer", "options", "point", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5, $6) RETURNING "id"[0m  [["question", "Optio veritatis delectus illo?"], ["answer", 1], ["options", "{quod,libero,repudiandae,quia}"], ["point", 4], ["created_at", "2024-01-10 19:24:33.039430"], ["updated_at", "2024-01-10 19:24:33.039430"]]
+  [1m[36mTRANSACTION (1.0ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mQuestionAnswer Create (0.3ms)[0m  [1m[32mINSERT INTO "question_answers" ("question", "answer", "options", "point", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5, $6) RETURNING "id"[0m  [["question", "Nisi tenetur vel tempore?"], ["answer", 3], ["options", "{iusto,ea,recusandae,et}"], ["point", 5], ["created_at", "2024-01-10 19:24:33.043200"], ["updated_at", "2024-01-10 19:24:33.043200"]]
+  [1m[36mTRANSACTION (1.0ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mQuestionAnswer Create (0.3ms)[0m  [1m[32mINSERT INTO "question_answers" ("question", "answer", "options", "point", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5, $6) RETURNING "id"[0m  [["question", "Et earum et eum?"], ["answer", 3], ["options", "{et,minima,similique,magnam}"], ["point", 3], ["created_at", "2024-01-10 19:24:33.046909"], ["updated_at", "2024-01-10 19:24:33.046909"]]
+  [1m[36mTRANSACTION (1.0ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mQuestionAnswer Create (0.2ms)[0m  [1m[32mINSERT INTO "question_answers" ("question", "answer", "options", "point", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5, $6) RETURNING "id"[0m  [["question", "Et rerum officia modi?"], ["answer", 3], ["options", "{officiis,ut,cupiditate,perspiciatis}"], ["point", 5], ["created_at", "2024-01-10 19:24:33.050545"], ["updated_at", "2024-01-10 19:24:33.050545"]]
+  [1m[36mTRANSACTION (1.0ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mQuestionAnswer Create (0.2ms)[0m  [1m[32mINSERT INTO "question_answers" ("question", "answer", "options", "point", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5, $6) RETURNING "id"[0m  [["question", "Distinctio consequatur recusandae fugit?"], ["answer", 2], ["options", "{adipisci,laboriosam,quisquam,eligendi}"], ["point", 3], ["created_at", "2024-01-10 19:24:33.054070"], ["updated_at", "2024-01-10 19:24:33.054070"]]
+  [1m[36mTRANSACTION (1.0ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mQuestionAnswer Create (0.3ms)[0m  [1m[32mINSERT INTO "question_answers" ("question", "answer", "options", "point", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5, $6) RETURNING "id"[0m  [["question", "Maiores consequatur eveniet praesentium?"], ["answer", 3], ["options", "{perferendis,sint,hic,recusandae}"], ["point", 4], ["created_at", "2024-01-10 19:24:33.057469"], ["updated_at", "2024-01-10 19:24:33.057469"]]
+  [1m[36mTRANSACTION (1.1ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mQuestionAnswer Create (0.2ms)[0m  [1m[32mINSERT INTO "question_answers" ("question", "answer", "options", "point", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5, $6) RETURNING "id"[0m  [["question", "Magnam nostrum odio omnis?"], ["answer", 1], ["options", "{illo,sapiente,ut,ut}"], ["point", 2], ["created_at", "2024-01-10 19:24:33.061126"], ["updated_at", "2024-01-10 19:24:33.061126"]]
+  [1m[36mTRANSACTION (1.1ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mQuestionAnswer Create (0.3ms)[0m  [1m[32mINSERT INTO "question_answers" ("question", "answer", "options", "point", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5, $6) RETURNING "id"[0m  [["question", "Ut temporibus vel et?"], ["answer", 3], ["options", "{ipsa,aut,sit,consequatur}"], ["point", 4], ["created_at", "2024-01-10 19:24:33.065006"], ["updated_at", "2024-01-10 19:24:33.065006"]]
+  [1m[36mTRANSACTION (1.4ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mQuestionAnswer Create (0.2ms)[0m  [1m[32mINSERT INTO "question_answers" ("question", "answer", "options", "point", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5, $6) RETURNING "id"[0m  [["question", "Modi et aperiam reiciendis?"], ["answer", 1], ["options", "{voluptate,accusamus,commodi,est}"], ["point", 3], ["created_at", "2024-01-10 19:24:33.069171"], ["updated_at", "2024-01-10 19:24:33.069171"]]
+  [1m[36mTRANSACTION (1.2ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mQuestionAnswer Create (0.3ms)[0m  [1m[32mINSERT INTO "question_answers" ("question", "answer", "options", "point", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5, $6) RETURNING "id"[0m  [["question", "Labore maxime quibusdam ipsa?"], ["answer", 3], ["options", "{voluptate,enim,qui,molestiae}"], ["point", 5], ["created_at", "2024-01-10 19:24:33.073012"], ["updated_at", "2024-01-10 19:24:33.073012"]]
+  [1m[36mTRANSACTION (1.2ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mQuestionAnswer Create (0.3ms)[0m  [1m[32mINSERT INTO "question_answers" ("question", "answer", "options", "point", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5, $6) RETURNING "id"[0m  [["question", "Recusandae modi voluptas amet?"], ["answer", 3], ["options", "{aperiam,ut,et,dignissimos}"], ["point", 3], ["created_at", "2024-01-10 19:24:33.077261"], ["updated_at", "2024-01-10 19:24:33.077261"]]
+  [1m[36mTRANSACTION (1.0ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mQuestionAnswer Create (0.2ms)[0m  [1m[32mINSERT INTO "question_answers" ("question", "answer", "options", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5) RETURNING "id"[0m  [["question", "Quia eos nemo odit?"], ["answer", 2], ["options", "{temporibus,beatae,odio,porro}"], ["created_at", "2024-01-10 19:24:33.081304"], ["updated_at", "2024-01-10 19:24:33.081304"]]
+  [1m[36mTRANSACTION (1.1ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mQuestionAnswer Create (0.3ms)[0m  [1m[32mINSERT INTO "question_answers" ("question", "answer", "options", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5) RETURNING "id"[0m  [["question", "Qui libero voluptatem repellat?"], ["answer", 2], ["options", "{sunt,eligendi,repudiandae,provident}"], ["created_at", "2024-01-10 19:24:33.084904"], ["updated_at", "2024-01-10 19:24:33.084904"]]
+  [1m[36mTRANSACTION (1.2ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mQuestionAnswer Create (0.3ms)[0m  [1m[32mINSERT INTO "question_answers" ("question", "answer", "options", "point", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5, $6) RETURNING "id"[0m  [["question", "Ut hic voluptatibus maxime?"], ["answer", 1], ["options", "{nulla,voluptates,numquam,officiis}"], ["point", 4], ["created_at", "2024-01-10 19:24:33.088969"], ["updated_at", "2024-01-10 19:24:33.088969"]]
+  [1m[36mTRANSACTION (1.1ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mQuestionAnswer Create (0.2ms)[0m  [1m[32mINSERT INTO "question_answers" ("question", "answer", "options", "point", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5, $6) RETURNING "id"[0m  [["question", "Cumque aliquid ab nesciunt?"], ["answer", 2], ["options", "{sed,sed,quae,accusamus}"], ["point", 4], ["created_at", "2024-01-10 19:24:33.093047"], ["updated_at", "2024-01-10 19:24:33.093047"]]
+  [1m[36mTRANSACTION (1.1ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mQuestionAnswer Load (0.2ms)[0m  [1m[34mSELECT "question_answers".* FROM "question_answers" WHERE "question_answers"."id" = $1 ORDER BY "question_answers"."created_at" ASC LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  [1m[36mCourse Load (0.2ms)[0m  [1m[34mSELECT "courses".* FROM "courses" WHERE "courses"."id" = $1 ORDER BY "courses"."created_at" ASC LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mExam Create (0.6ms)[0m  [1m[32mINSERT INTO "exams" ("question_answer_id", "course_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["question_answer_id", 2], ["course_id", 1], ["created_at", "2024-01-10 19:24:33.106351"], ["updated_at", "2024-01-10 19:24:33.106351"]]
+  [1m[36mTRANSACTION (1.0ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mQuestionAnswer Load (0.1ms)[0m  [1m[34mSELECT "question_answers".* FROM "question_answers" WHERE "question_answers"."id" = $1 ORDER BY "question_answers"."created_at" ASC LIMIT $2[0m  [["id", 4], ["LIMIT", 1]]
+  [1m[36mCourse Load (0.1ms)[0m  [1m[34mSELECT "courses".* FROM "courses" WHERE "courses"."id" = $1 ORDER BY "courses"."created_at" ASC LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mExam Create (0.3ms)[0m  [1m[32mINSERT INTO "exams" ("question_answer_id", "course_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["question_answer_id", 4], ["course_id", 1], ["created_at", "2024-01-10 19:24:33.112479"], ["updated_at", "2024-01-10 19:24:33.112479"]]
+  [1m[36mTRANSACTION (1.0ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mQuestionAnswer Load (0.2ms)[0m  [1m[34mSELECT "question_answers".* FROM "question_answers" WHERE "question_answers"."id" = $1 ORDER BY "question_answers"."created_at" ASC LIMIT $2[0m  [["id", 20], ["LIMIT", 1]]
+  [1m[36mCourse Load (0.2ms)[0m  [1m[34mSELECT "courses".* FROM "courses" WHERE "courses"."id" = $1 ORDER BY "courses"."created_at" ASC LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mExam Create (0.3ms)[0m  [1m[32mINSERT INTO "exams" ("question_answer_id", "course_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["question_answer_id", 20], ["course_id", 1], ["created_at", "2024-01-10 19:24:33.118328"], ["updated_at", "2024-01-10 19:24:33.118328"]]
+  [1m[36mTRANSACTION (1.1ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mQuestionAnswer Load (0.2ms)[0m  [1m[34mSELECT "question_answers".* FROM "question_answers" WHERE "question_answers"."id" = $1 ORDER BY "question_answers"."created_at" ASC LIMIT $2[0m  [["id", 23], ["LIMIT", 1]]
+  [1m[36mCourse Load (0.2ms)[0m  [1m[34mSELECT "courses".* FROM "courses" WHERE "courses"."id" = $1 ORDER BY "courses"."created_at" ASC LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mExam Create (0.3ms)[0m  [1m[32mINSERT INTO "exams" ("question_answer_id", "course_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["question_answer_id", 23], ["course_id", 1], ["created_at", "2024-01-10 19:24:33.124277"], ["updated_at", "2024-01-10 19:24:33.124277"]]
+  [1m[36mTRANSACTION (1.0ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mQuestionAnswer Load (0.2ms)[0m  [1m[34mSELECT "question_answers".* FROM "question_answers" WHERE "question_answers"."id" = $1 ORDER BY "question_answers"."created_at" ASC LIMIT $2[0m  [["id", 11], ["LIMIT", 1]]
+  [1m[36mCourse Load (0.2ms)[0m  [1m[34mSELECT "courses".* FROM "courses" WHERE "courses"."id" = $1 ORDER BY "courses"."created_at" ASC LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mExam Create (0.3ms)[0m  [1m[32mINSERT INTO "exams" ("question_answer_id", "course_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["question_answer_id", 11], ["course_id", 1], ["created_at", "2024-01-10 19:24:33.129836"], ["updated_at", "2024-01-10 19:24:33.129836"]]
+  [1m[36mTRANSACTION (1.1ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mQuestionAnswer Load (0.2ms)[0m  [1m[34mSELECT "question_answers".* FROM "question_answers" WHERE "question_answers"."id" = $1 ORDER BY "question_answers"."created_at" ASC LIMIT $2[0m  [["id", 6], ["LIMIT", 1]]
+  [1m[36mCourse Load (0.2ms)[0m  [1m[34mSELECT "courses".* FROM "courses" WHERE "courses"."id" = $1 ORDER BY "courses"."created_at" ASC LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mExam Create (0.3ms)[0m  [1m[32mINSERT INTO "exams" ("question_answer_id", "course_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["question_answer_id", 6], ["course_id", 1], ["created_at", "2024-01-10 19:24:33.135805"], ["updated_at", "2024-01-10 19:24:33.135805"]]
+  [1m[36mTRANSACTION (1.1ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mQuestionAnswer Load (0.1ms)[0m  [1m[34mSELECT "question_answers".* FROM "question_answers" WHERE "question_answers"."id" = $1 ORDER BY "question_answers"."created_at" ASC LIMIT $2[0m  [["id", 24], ["LIMIT", 1]]
+  [1m[36mCourse Load (0.2ms)[0m  [1m[34mSELECT "courses".* FROM "courses" WHERE "courses"."id" = $1 ORDER BY "courses"."created_at" ASC LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  [1m[36mExam Create (0.4ms)[0m  [1m[32mINSERT INTO "exams" ("question_answer_id", "course_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["question_answer_id", 24], ["course_id", 2], ["created_at", "2024-01-10 19:24:33.141667"], ["updated_at", "2024-01-10 19:24:33.141667"]]
+  [1m[36mTRANSACTION (1.0ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mQuestionAnswer Load (0.1ms)[0m  [1m[34mSELECT "question_answers".* FROM "question_answers" WHERE "question_answers"."id" = $1 ORDER BY "question_answers"."created_at" ASC LIMIT $2[0m  [["id", 5], ["LIMIT", 1]]
+  [1m[36mCourse Load (0.1ms)[0m  [1m[34mSELECT "courses".* FROM "courses" WHERE "courses"."id" = $1 ORDER BY "courses"."created_at" ASC LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  [1m[36mExam Create (0.2ms)[0m  [1m[32mINSERT INTO "exams" ("question_answer_id", "course_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["question_answer_id", 5], ["course_id", 2], ["created_at", "2024-01-10 19:24:33.147436"], ["updated_at", "2024-01-10 19:24:33.147436"]]
+  [1m[36mTRANSACTION (0.9ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mQuestionAnswer Load (0.1ms)[0m  [1m[34mSELECT "question_answers".* FROM "question_answers" WHERE "question_answers"."id" = $1 ORDER BY "question_answers"."created_at" ASC LIMIT $2[0m  [["id", 12], ["LIMIT", 1]]
+  [1m[36mCourse Load (0.1ms)[0m  [1m[34mSELECT "courses".* FROM "courses" WHERE "courses"."id" = $1 ORDER BY "courses"."created_at" ASC LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  [1m[36mExam Create (0.3ms)[0m  [1m[32mINSERT INTO "exams" ("question_answer_id", "course_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["question_answer_id", 12], ["course_id", 2], ["created_at", "2024-01-10 19:24:33.152744"], ["updated_at", "2024-01-10 19:24:33.152744"]]
+  [1m[36mTRANSACTION (1.0ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mQuestionAnswer Load (0.2ms)[0m  [1m[34mSELECT "question_answers".* FROM "question_answers" WHERE "question_answers"."id" = $1 ORDER BY "question_answers"."created_at" ASC LIMIT $2[0m  [["id", 4], ["LIMIT", 1]]
+  [1m[36mCourse Load (0.2ms)[0m  [1m[34mSELECT "courses".* FROM "courses" WHERE "courses"."id" = $1 ORDER BY "courses"."created_at" ASC LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  [1m[36mExam Create (0.2ms)[0m  [1m[32mINSERT INTO "exams" ("question_answer_id", "course_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["question_answer_id", 4], ["course_id", 2], ["created_at", "2024-01-10 19:24:33.158386"], ["updated_at", "2024-01-10 19:24:33.158386"]]
+  [1m[36mTRANSACTION (1.0ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mQuestionAnswer Load (0.2ms)[0m  [1m[34mSELECT "question_answers".* FROM "question_answers" WHERE "question_answers"."id" = $1 ORDER BY "question_answers"."created_at" ASC LIMIT $2[0m  [["id", 6], ["LIMIT", 1]]
+  [1m[36mCourse Load (0.2ms)[0m  [1m[34mSELECT "courses".* FROM "courses" WHERE "courses"."id" = $1 ORDER BY "courses"."created_at" ASC LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  [1m[36mExam Create (0.3ms)[0m  [1m[32mINSERT INTO "exams" ("question_answer_id", "course_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["question_answer_id", 6], ["course_id", 2], ["created_at", "2024-01-10 19:24:33.164144"], ["updated_at", "2024-01-10 19:24:33.164144"]]
+  [1m[36mTRANSACTION (1.3ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mQuestionAnswer Load (0.2ms)[0m  [1m[34mSELECT "question_answers".* FROM "question_answers" WHERE "question_answers"."id" = $1 ORDER BY "question_answers"."created_at" ASC LIMIT $2[0m  [["id", 12], ["LIMIT", 1]]
+  [1m[36mCourse Load (0.2ms)[0m  [1m[34mSELECT "courses".* FROM "courses" WHERE "courses"."id" = $1 ORDER BY "courses"."created_at" ASC LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  [1m[36mExam Create (0.3ms)[0m  [1m[32mINSERT INTO "exams" ("question_answer_id", "course_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["question_answer_id", 12], ["course_id", 2], ["created_at", "2024-01-10 19:24:33.170891"], ["updated_at", "2024-01-10 19:24:33.170891"]]
+  [1m[36mTRANSACTION (1.0ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mQuestionAnswer Load (0.2ms)[0m  [1m[34mSELECT "question_answers".* FROM "question_answers" WHERE "question_answers"."id" = $1 ORDER BY "question_answers"."created_at" ASC LIMIT $2[0m  [["id", 14], ["LIMIT", 1]]
+  [1m[36mCourse Load (0.1ms)[0m  [1m[34mSELECT "courses".* FROM "courses" WHERE "courses"."id" = $1 ORDER BY "courses"."created_at" ASC LIMIT $2[0m  [["id", 3], ["LIMIT", 1]]
+  [1m[36mExam Create (0.3ms)[0m  [1m[32mINSERT INTO "exams" ("question_answer_id", "course_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["question_answer_id", 14], ["course_id", 3], ["created_at", "2024-01-10 19:24:33.176628"], ["updated_at", "2024-01-10 19:24:33.176628"]]
+  [1m[36mTRANSACTION (1.2ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mQuestionAnswer Load (0.2ms)[0m  [1m[34mSELECT "question_answers".* FROM "question_answers" WHERE "question_answers"."id" = $1 ORDER BY "question_answers"."created_at" ASC LIMIT $2[0m  [["id", 25], ["LIMIT", 1]]
+  [1m[36mCourse Load (0.2ms)[0m  [1m[34mSELECT "courses".* FROM "courses" WHERE "courses"."id" = $1 ORDER BY "courses"."created_at" ASC LIMIT $2[0m  [["id", 3], ["LIMIT", 1]]
+  [1m[36mExam Create (0.3ms)[0m  [1m[32mINSERT INTO "exams" ("question_answer_id", "course_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["question_answer_id", 25], ["course_id", 3], ["created_at", "2024-01-10 19:24:33.182857"], ["updated_at", "2024-01-10 19:24:33.182857"]]
+  [1m[36mTRANSACTION (1.0ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mQuestionAnswer Load (0.1ms)[0m  [1m[34mSELECT "question_answers".* FROM "question_answers" WHERE "question_answers"."id" = $1 ORDER BY "question_answers"."created_at" ASC LIMIT $2[0m  [["id", 2], ["LIMIT", 1]]
+  [1m[36mCourse Load (0.1ms)[0m  [1m[34mSELECT "courses".* FROM "courses" WHERE "courses"."id" = $1 ORDER BY "courses"."created_at" ASC LIMIT $2[0m  [["id", 3], ["LIMIT", 1]]
+  [1m[36mExam Create (0.3ms)[0m  [1m[32mINSERT INTO "exams" ("question_answer_id", "course_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["question_answer_id", 2], ["course_id", 3], ["created_at", "2024-01-10 19:24:33.188543"], ["updated_at", "2024-01-10 19:24:33.188543"]]
+  [1m[36mTRANSACTION (1.2ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mQuestionAnswer Load (0.2ms)[0m  [1m[34mSELECT "question_answers".* FROM "question_answers" WHERE "question_answers"."id" = $1 ORDER BY "question_answers"."created_at" ASC LIMIT $2[0m  [["id", 13], ["LIMIT", 1]]
+  [1m[36mCourse Load (0.2ms)[0m  [1m[34mSELECT "courses".* FROM "courses" WHERE "courses"."id" = $1 ORDER BY "courses"."created_at" ASC LIMIT $2[0m  [["id", 3], ["LIMIT", 1]]
+  [1m[36mExam Create (0.4ms)[0m  [1m[32mINSERT INTO "exams" ("question_answer_id", "course_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["question_answer_id", 13], ["course_id", 3], ["created_at", "2024-01-10 19:24:33.195447"], ["updated_at", "2024-01-10 19:24:33.195447"]]
+  [1m[36mTRANSACTION (8.7ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mQuestionAnswer Load (0.4ms)[0m  [1m[34mSELECT "question_answers".* FROM "question_answers" WHERE "question_answers"."id" = $1 ORDER BY "question_answers"."created_at" ASC LIMIT $2[0m  [["id", 16], ["LIMIT", 1]]
+  [1m[36mCourse Load (0.3ms)[0m  [1m[34mSELECT "courses".* FROM "courses" WHERE "courses"."id" = $1 ORDER BY "courses"."created_at" ASC LIMIT $2[0m  [["id", 3], ["LIMIT", 1]]
+  [1m[36mExam Create (0.6ms)[0m  [1m[32mINSERT INTO "exams" ("question_answer_id", "course_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["question_answer_id", 16], ["course_id", 3], ["created_at", "2024-01-10 19:24:33.214398"], ["updated_at", "2024-01-10 19:24:33.214398"]]
+  [1m[36mTRANSACTION (1.3ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mQuestionAnswer Load (0.3ms)[0m  [1m[34mSELECT "question_answers".* FROM "question_answers" WHERE "question_answers"."id" = $1 ORDER BY "question_answers"."created_at" ASC LIMIT $2[0m  [["id", 16], ["LIMIT", 1]]
+  [1m[36mCourse Load (0.3ms)[0m  [1m[34mSELECT "courses".* FROM "courses" WHERE "courses"."id" = $1 ORDER BY "courses"."created_at" ASC LIMIT $2[0m  [["id", 3], ["LIMIT", 1]]
+  [1m[36mExam Create (0.5ms)[0m  [1m[32mINSERT INTO "exams" ("question_answer_id", "course_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["question_answer_id", 16], ["course_id", 3], ["created_at", "2024-01-10 19:24:33.226193"], ["updated_at", "2024-01-10 19:24:33.226193"]]
+  [1m[36mTRANSACTION (1.1ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mStudent Create (0.7ms)[0m  [1m[32mINSERT INTO "students" ("name", "created_at", "updated_at") VALUES ($1, $2, $3) RETURNING "id"[0m  [["name", "Chang Gleichner"], ["created_at", "2024-01-10 19:24:33.248068"], ["updated_at", "2024-01-10 19:24:33.248068"]]
+  [1m[36mTRANSACTION (1.2ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mCourse Load (0.3ms)[0m  [1m[34mSELECT "courses".* FROM "courses" WHERE "courses"."id" = $1 ORDER BY "courses"."created_at" ASC LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mStudentCourse Create (1.1ms)[0m  [1m[32mINSERT INTO "student_courses" ("student_id", "course_id", "status", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5) RETURNING "id"[0m  [["student_id", 1], ["course_id", 1], ["status", 1], ["created_at", "2024-01-10 19:24:33.279524"], ["updated_at", "2024-01-10 19:24:33.279524"]]
+  [1m[36mTRANSACTION (1.1ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mStudent Create (0.4ms)[0m  [1m[32mINSERT INTO "students" ("name", "created_at", "updated_at") VALUES ($1, $2, $3) RETURNING "id"[0m  [["name", "Aurelio Murazik"], ["created_at", "2024-01-10 19:24:33.285860"], ["updated_at", "2024-01-10 19:24:33.285860"]]
+  [1m[36mTRANSACTION (1.0ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mCourse Load (0.3ms)[0m  [1m[34mSELECT "courses".* FROM "courses" WHERE "courses"."id" = $1 ORDER BY "courses"."created_at" ASC LIMIT $2[0m  [["id", 5], ["LIMIT", 1]]
+  [1m[36mStudentCourse Create (0.5ms)[0m  [1m[32mINSERT INTO "student_courses" ("student_id", "course_id", "status", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5) RETURNING "id"[0m  [["student_id", 2], ["course_id", 5], ["status", 2], ["created_at", "2024-01-10 19:24:33.296356"], ["updated_at", "2024-01-10 19:24:33.296356"]]
+  [1m[36mTRANSACTION (1.0ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mStudent Create (0.4ms)[0m  [1m[32mINSERT INTO "students" ("name", "created_at", "updated_at") VALUES ($1, $2, $3) RETURNING "id"[0m  [["name", "Marcelo Gerlach"], ["created_at", "2024-01-10 19:24:33.301156"], ["updated_at", "2024-01-10 19:24:33.301156"]]
+  [1m[36mTRANSACTION (1.4ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mCourse Load (0.3ms)[0m  [1m[34mSELECT "courses".* FROM "courses" WHERE "courses"."id" = $1 ORDER BY "courses"."created_at" ASC LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mStudentCourse Create (0.5ms)[0m  [1m[32mINSERT INTO "student_courses" ("student_id", "course_id", "status", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5) RETURNING "id"[0m  [["student_id", 3], ["course_id", 1], ["status", 2], ["created_at", "2024-01-10 19:24:33.310977"], ["updated_at", "2024-01-10 19:24:33.310977"]]
+  [1m[36mTRANSACTION (1.1ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mStudent Create (0.4ms)[0m  [1m[32mINSERT INTO "students" ("name", "created_at", "updated_at") VALUES ($1, $2, $3) RETURNING "id"[0m  [["name", "The Hon. Roman Kunze"], ["created_at", "2024-01-10 19:24:33.315820"], ["updated_at", "2024-01-10 19:24:33.315820"]]
+  [1m[36mTRANSACTION (1.1ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mCourse Load (0.3ms)[0m  [1m[34mSELECT "courses".* FROM "courses" WHERE "courses"."id" = $1 ORDER BY "courses"."created_at" ASC LIMIT $2[0m  [["id", 4], ["LIMIT", 1]]
+  [1m[36mStudentCourse Create (0.5ms)[0m  [1m[32mINSERT INTO "student_courses" ("student_id", "course_id", "status", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5) RETURNING "id"[0m  [["student_id", 4], ["course_id", 4], ["status", 2], ["created_at", "2024-01-10 19:24:33.324744"], ["updated_at", "2024-01-10 19:24:33.324744"]]
+  [1m[36mTRANSACTION (1.0ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mStudent Create (0.3ms)[0m  [1m[32mINSERT INTO "students" ("name", "created_at", "updated_at") VALUES ($1, $2, $3) RETURNING "id"[0m  [["name", "Shiloh Witting"], ["created_at", "2024-01-10 19:24:33.328965"], ["updated_at", "2024-01-10 19:24:33.328965"]]
+  [1m[36mTRANSACTION (1.1ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mCourse Load (0.3ms)[0m  [1m[34mSELECT "courses".* FROM "courses" WHERE "courses"."id" = $1 ORDER BY "courses"."created_at" ASC LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mStudentCourse Create (0.4ms)[0m  [1m[32mINSERT INTO "student_courses" ("student_id", "course_id", "status", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5) RETURNING "id"[0m  [["student_id", 5], ["course_id", 1], ["status", 1], ["created_at", "2024-01-10 19:24:33.336910"], ["updated_at", "2024-01-10 19:24:33.336910"]]
+  [1m[36mTRANSACTION (1.1ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mStudent Create (0.3ms)[0m  [1m[32mINSERT INTO "students" ("name", "created_at", "updated_at") VALUES ($1, $2, $3) RETURNING "id"[0m  [["name", "Fr. Isreal Wolf"], ["created_at", "2024-01-10 19:24:33.340983"], ["updated_at", "2024-01-10 19:24:33.340983"]]
+  [1m[36mTRANSACTION (1.0ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mCourse Load (0.2ms)[0m  [1m[34mSELECT "courses".* FROM "courses" WHERE "courses"."id" = $1 ORDER BY "courses"."created_at" ASC LIMIT $2[0m  [["id", 5], ["LIMIT", 1]]
+  [1m[36mStudentCourse Create (0.4ms)[0m  [1m[32mINSERT INTO "student_courses" ("student_id", "course_id", "status", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5) RETURNING "id"[0m  [["student_id", 6], ["course_id", 5], ["status", 2], ["created_at", "2024-01-10 19:24:33.348558"], ["updated_at", "2024-01-10 19:24:33.348558"]]
+  [1m[36mTRANSACTION (1.0ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mStudent Create (0.3ms)[0m  [1m[32mINSERT INTO "students" ("name", "created_at", "updated_at") VALUES ($1, $2, $3) RETURNING "id"[0m  [["name", "Enrique Ritchie"], ["created_at", "2024-01-10 19:24:33.352350"], ["updated_at", "2024-01-10 19:24:33.352350"]]
+  [1m[36mTRANSACTION (1.0ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mCourse Load (0.2ms)[0m  [1m[34mSELECT "courses".* FROM "courses" WHERE "courses"."id" = $1 ORDER BY "courses"."created_at" ASC LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mStudentCourse Create (0.3ms)[0m  [1m[32mINSERT INTO "student_courses" ("student_id", "course_id", "status", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5) RETURNING "id"[0m  [["student_id", 7], ["course_id", 1], ["status", 2], ["created_at", "2024-01-10 19:24:33.359314"], ["updated_at", "2024-01-10 19:24:33.359314"]]
+  [1m[36mTRANSACTION (1.1ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mStudent Create (0.3ms)[0m  [1m[32mINSERT INTO "students" ("name", "created_at", "updated_at") VALUES ($1, $2, $3) RETURNING "id"[0m  [["name", "Harley West VM"], ["created_at", "2024-01-10 19:24:33.362910"], ["updated_at", "2024-01-10 19:24:33.362910"]]
+  [1m[36mTRANSACTION (1.1ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mCourse Load (0.2ms)[0m  [1m[34mSELECT "courses".* FROM "courses" WHERE "courses"."id" = $1 ORDER BY "courses"."created_at" ASC LIMIT $2[0m  [["id", 4], ["LIMIT", 1]]
+  [1m[36mStudentCourse Create (0.3ms)[0m  [1m[32mINSERT INTO "student_courses" ("student_id", "course_id", "status", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5) RETURNING "id"[0m  [["student_id", 8], ["course_id", 4], ["status", 2], ["created_at", "2024-01-10 19:24:33.369516"], ["updated_at", "2024-01-10 19:24:33.369516"]]
+  [1m[36mTRANSACTION (1.1ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mStudent Create (0.3ms)[0m  [1m[32mINSERT INTO "students" ("name", "created_at", "updated_at") VALUES ($1, $2, $3) RETURNING "id"[0m  [["name", "Josh Purdy DDS"], ["created_at", "2024-01-10 19:24:33.373124"], ["updated_at", "2024-01-10 19:24:33.373124"]]
+  [1m[36mTRANSACTION (1.1ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mCourse Load (0.2ms)[0m  [1m[34mSELECT "courses".* FROM "courses" WHERE "courses"."id" = $1 ORDER BY "courses"."created_at" ASC LIMIT $2[0m  [["id", 4], ["LIMIT", 1]]
+  [1m[36mStudentCourse Create (0.3ms)[0m  [1m[32mINSERT INTO "student_courses" ("student_id", "course_id", "status", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5) RETURNING "id"[0m  [["student_id", 9], ["course_id", 4], ["status", 1], ["created_at", "2024-01-10 19:24:33.379412"], ["updated_at", "2024-01-10 19:24:33.379412"]]
+  [1m[36mTRANSACTION (0.9ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mStudent Create (0.2ms)[0m  [1m[32mINSERT INTO "students" ("name", "created_at", "updated_at") VALUES ($1, $2, $3) RETURNING "id"[0m  [["name", "Wendell Torp"], ["created_at", "2024-01-10 19:24:33.382435"], ["updated_at", "2024-01-10 19:24:33.382435"]]
+  [1m[36mTRANSACTION (1.0ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mCourse Load (0.2ms)[0m  [1m[34mSELECT "courses".* FROM "courses" WHERE "courses"."id" = $1 ORDER BY "courses"."created_at" ASC LIMIT $2[0m  [["id", 4], ["LIMIT", 1]]
+  [1m[36mStudentCourse Create (0.3ms)[0m  [1m[32mINSERT INTO "student_courses" ("student_id", "course_id", "status", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5) RETURNING "id"[0m  [["student_id", 10], ["course_id", 4], ["status", 2], ["created_at", "2024-01-10 19:24:33.388260"], ["updated_at", "2024-01-10 19:24:33.388260"]]
+  [1m[36mTRANSACTION (0.9ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mStudent Create (0.2ms)[0m  [1m[32mINSERT INTO "students" ("name", "created_at", "updated_at") VALUES ($1, $2, $3) RETURNING "id"[0m  [["name", "Ray Lindgren"], ["created_at", "2024-01-10 19:24:33.391291"], ["updated_at", "2024-01-10 19:24:33.391291"]]
+  [1m[36mTRANSACTION (0.9ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mCourse Load (0.1ms)[0m  [1m[34mSELECT "courses".* FROM "courses" WHERE "courses"."id" = $1 ORDER BY "courses"."created_at" ASC LIMIT $2[0m  [["id", 3], ["LIMIT", 1]]
+  [1m[36mStudentCourse Create (0.3ms)[0m  [1m[32mINSERT INTO "student_courses" ("student_id", "course_id", "status", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5) RETURNING "id"[0m  [["student_id", 11], ["course_id", 3], ["status", 1], ["created_at", "2024-01-10 19:24:33.396828"], ["updated_at", "2024-01-10 19:24:33.396828"]]
+  [1m[36mTRANSACTION (1.0ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mStudent Create (0.2ms)[0m  [1m[32mINSERT INTO "students" ("name", "created_at", "updated_at") VALUES ($1, $2, $3) RETURNING "id"[0m  [["name", "Roxie Schmeler"], ["created_at", "2024-01-10 19:24:33.399933"], ["updated_at", "2024-01-10 19:24:33.399933"]]
+  [1m[36mTRANSACTION (0.9ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mCourse Load (0.1ms)[0m  [1m[34mSELECT "courses".* FROM "courses" WHERE "courses"."id" = $1 ORDER BY "courses"."created_at" ASC LIMIT $2[0m  [["id", 5], ["LIMIT", 1]]
+  [1m[36mStudentCourse Create (0.2ms)[0m  [1m[32mINSERT INTO "student_courses" ("student_id", "course_id", "status", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5) RETURNING "id"[0m  [["student_id", 12], ["course_id", 5], ["status", 1], ["created_at", "2024-01-10 19:24:33.405579"], ["updated_at", "2024-01-10 19:24:33.405579"]]
+  [1m[36mTRANSACTION (1.0ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mStudent Create (0.2ms)[0m  [1m[32mINSERT INTO "students" ("name", "created_at", "updated_at") VALUES ($1, $2, $3) RETURNING "id"[0m  [["name", "Jeraldine Quigley"], ["created_at", "2024-01-10 19:24:33.408584"], ["updated_at", "2024-01-10 19:24:33.408584"]]
+  [1m[36mTRANSACTION (1.0ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mCourse Load (0.2ms)[0m  [1m[34mSELECT "courses".* FROM "courses" WHERE "courses"."id" = $1 ORDER BY "courses"."created_at" ASC LIMIT $2[0m  [["id", 5], ["LIMIT", 1]]
+  [1m[36mStudentCourse Create (0.2ms)[0m  [1m[32mINSERT INTO "student_courses" ("student_id", "course_id", "status", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5) RETURNING "id"[0m  [["student_id", 13], ["course_id", 5], ["status", 1], ["created_at", "2024-01-10 19:24:33.414349"], ["updated_at", "2024-01-10 19:24:33.414349"]]
+  [1m[36mTRANSACTION (1.0ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mStudent Create (0.2ms)[0m  [1m[32mINSERT INTO "students" ("name", "created_at", "updated_at") VALUES ($1, $2, $3) RETURNING "id"[0m  [["name", "Rev. Serina Maggio"], ["created_at", "2024-01-10 19:24:33.417383"], ["updated_at", "2024-01-10 19:24:33.417383"]]
+  [1m[36mTRANSACTION (1.1ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mCourse Load (0.2ms)[0m  [1m[34mSELECT "courses".* FROM "courses" WHERE "courses"."id" = $1 ORDER BY "courses"."created_at" ASC LIMIT $2[0m  [["id", 4], ["LIMIT", 1]]
+  [1m[36mStudentCourse Create (0.3ms)[0m  [1m[32mINSERT INTO "student_courses" ("student_id", "course_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["student_id", 14], ["course_id", 4], ["created_at", "2024-01-10 19:24:33.423975"], ["updated_at", "2024-01-10 19:24:33.423975"]]
+  [1m[36mTRANSACTION (1.2ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mStudent Create (0.3ms)[0m  [1m[32mINSERT INTO "students" ("name", "created_at", "updated_at") VALUES ($1, $2, $3) RETURNING "id"[0m  [["name", "Galen Bartoletti"], ["created_at", "2024-01-10 19:24:33.427707"], ["updated_at", "2024-01-10 19:24:33.427707"]]
+  [1m[36mTRANSACTION (1.1ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mCourse Load (0.2ms)[0m  [1m[34mSELECT "courses".* FROM "courses" WHERE "courses"."id" = $1 ORDER BY "courses"."created_at" ASC LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mStudentCourse Create (0.3ms)[0m  [1m[32mINSERT INTO "student_courses" ("student_id", "course_id", "status", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5) RETURNING "id"[0m  [["student_id", 15], ["course_id", 1], ["status", 2], ["created_at", "2024-01-10 19:24:33.434189"], ["updated_at", "2024-01-10 19:24:33.434189"]]
+  [1m[36mTRANSACTION (1.0ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mStudent Create (0.2ms)[0m  [1m[32mINSERT INTO "students" ("name", "created_at", "updated_at") VALUES ($1, $2, $3) RETURNING "id"[0m  [["name", "Seth Rice"], ["created_at", "2024-01-10 19:24:33.437335"], ["updated_at", "2024-01-10 19:24:33.437335"]]
+  [1m[36mTRANSACTION (1.0ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mCourse Load (0.2ms)[0m  [1m[34mSELECT "courses".* FROM "courses" WHERE "courses"."id" = $1 ORDER BY "courses"."created_at" ASC LIMIT $2[0m  [["id", 4], ["LIMIT", 1]]
+  [1m[36mStudentCourse Create (0.3ms)[0m  [1m[32mINSERT INTO "student_courses" ("student_id", "course_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["student_id", 16], ["course_id", 4], ["created_at", "2024-01-10 19:24:33.443287"], ["updated_at", "2024-01-10 19:24:33.443287"]]
+  [1m[36mTRANSACTION (1.0ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mStudent Create (0.2ms)[0m  [1m[32mINSERT INTO "students" ("name", "created_at", "updated_at") VALUES ($1, $2, $3) RETURNING "id"[0m  [["name", "Josue Donnelly"], ["created_at", "2024-01-10 19:24:33.446358"], ["updated_at", "2024-01-10 19:24:33.446358"]]
+  [1m[36mTRANSACTION (1.0ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mCourse Load (0.2ms)[0m  [1m[34mSELECT "courses".* FROM "courses" WHERE "courses"."id" = $1 ORDER BY "courses"."created_at" ASC LIMIT $2[0m  [["id", 4], ["LIMIT", 1]]
+  [1m[36mStudentCourse Create (0.3ms)[0m  [1m[32mINSERT INTO "student_courses" ("student_id", "course_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["student_id", 17], ["course_id", 4], ["created_at", "2024-01-10 19:24:33.452245"], ["updated_at", "2024-01-10 19:24:33.452245"]]
+  [1m[36mTRANSACTION (1.0ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mStudent Create (0.2ms)[0m  [1m[32mINSERT INTO "students" ("name", "created_at", "updated_at") VALUES ($1, $2, $3) RETURNING "id"[0m  [["name", "The Hon. Gracia Collins"], ["created_at", "2024-01-10 19:24:33.455297"], ["updated_at", "2024-01-10 19:24:33.455297"]]
+  [1m[36mTRANSACTION (1.3ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mCourse Load (0.1ms)[0m  [1m[34mSELECT "courses".* FROM "courses" WHERE "courses"."id" = $1 ORDER BY "courses"."created_at" ASC LIMIT $2[0m  [["id", 5], ["LIMIT", 1]]
+  [1m[36mStudentCourse Create (0.3ms)[0m  [1m[32mINSERT INTO "student_courses" ("student_id", "course_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["student_id", 18], ["course_id", 5], ["created_at", "2024-01-10 19:24:33.461150"], ["updated_at", "2024-01-10 19:24:33.461150"]]
+  [1m[36mTRANSACTION (1.0ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mStudent Create (0.2ms)[0m  [1m[32mINSERT INTO "students" ("name", "created_at", "updated_at") VALUES ($1, $2, $3) RETURNING "id"[0m  [["name", "Aimee Graham IV"], ["created_at", "2024-01-10 19:24:33.464081"], ["updated_at", "2024-01-10 19:24:33.464081"]]
+  [1m[36mTRANSACTION (0.9ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mCourse Load (0.1ms)[0m  [1m[34mSELECT "courses".* FROM "courses" WHERE "courses"."id" = $1 ORDER BY "courses"."created_at" ASC LIMIT $2[0m  [["id", 3], ["LIMIT", 1]]
+  [1m[36mStudentCourse Create (0.2ms)[0m  [1m[32mINSERT INTO "student_courses" ("student_id", "course_id", "status", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5) RETURNING "id"[0m  [["student_id", 19], ["course_id", 3], ["status", 1], ["created_at", "2024-01-10 19:24:33.469347"], ["updated_at", "2024-01-10 19:24:33.469347"]]
+  [1m[36mTRANSACTION (0.9ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mStudent Create (0.2ms)[0m  [1m[32mINSERT INTO "students" ("name", "created_at", "updated_at") VALUES ($1, $2, $3) RETURNING "id"[0m  [["name", "Vergie Rempel"], ["created_at", "2024-01-10 19:24:33.472174"], ["updated_at", "2024-01-10 19:24:33.472174"]]
+  [1m[36mTRANSACTION (0.9ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mCourse Load (0.1ms)[0m  [1m[34mSELECT "courses".* FROM "courses" WHERE "courses"."id" = $1 ORDER BY "courses"."created_at" ASC LIMIT $2[0m  [["id", 5], ["LIMIT", 1]]
+  [1m[36mStudentCourse Create (0.2ms)[0m  [1m[32mINSERT INTO "student_courses" ("student_id", "course_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["student_id", 20], ["course_id", 5], ["created_at", "2024-01-10 19:24:33.477427"], ["updated_at", "2024-01-10 19:24:33.477427"]]
+  [1m[36mTRANSACTION (0.9ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mStudent Create (0.2ms)[0m  [1m[32mINSERT INTO "students" ("name", "created_at", "updated_at") VALUES ($1, $2, $3) RETURNING "id"[0m  [["name", "Spencer Hickle"], ["created_at", "2024-01-10 19:24:33.480337"], ["updated_at", "2024-01-10 19:24:33.480337"]]
+  [1m[36mTRANSACTION (0.9ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mCourse Load (0.2ms)[0m  [1m[34mSELECT "courses".* FROM "courses" WHERE "courses"."id" = $1 ORDER BY "courses"."created_at" ASC LIMIT $2[0m  [["id", 5], ["LIMIT", 1]]
+  [1m[36mStudentCourse Create (0.3ms)[0m  [1m[32mINSERT INTO "student_courses" ("student_id", "course_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4) RETURNING "id"[0m  [["student_id", 21], ["course_id", 5], ["created_at", "2024-01-10 19:24:33.485967"], ["updated_at", "2024-01-10 19:24:33.485967"]]
+  [1m[36mTRANSACTION (0.9ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mStudent Create (0.3ms)[0m  [1m[32mINSERT INTO "students" ("name", "created_at", "updated_at") VALUES ($1, $2, $3) RETURNING "id"[0m  [["name", "Rev. Pauletta Bahringer"], ["created_at", "2024-01-10 19:24:33.489028"], ["updated_at", "2024-01-10 19:24:33.489028"]]
+  [1m[36mTRANSACTION (0.9ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mCourse Load (0.2ms)[0m  [1m[34mSELECT "courses".* FROM "courses" WHERE "courses"."id" = $1 ORDER BY "courses"."created_at" ASC LIMIT $2[0m  [["id", 3], ["LIMIT", 1]]
+  [1m[36mStudentCourse Create (0.3ms)[0m  [1m[32mINSERT INTO "student_courses" ("student_id", "course_id", "status", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5) RETURNING "id"[0m  [["student_id", 22], ["course_id", 3], ["status", 1], ["created_at", "2024-01-10 19:24:33.497210"], ["updated_at", "2024-01-10 19:24:33.497210"]]
+  [1m[36mTRANSACTION (0.9ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mStudent Create (0.2ms)[0m  [1m[32mINSERT INTO "students" ("name", "created_at", "updated_at") VALUES ($1, $2, $3) RETURNING "id"[0m  [["name", "Joe Erdman"], ["created_at", "2024-01-10 19:24:33.500195"], ["updated_at", "2024-01-10 19:24:33.500195"]]
+  [1m[36mTRANSACTION (0.9ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mCourse Load (0.2ms)[0m  [1m[34mSELECT "courses".* FROM "courses" WHERE "courses"."id" = $1 ORDER BY "courses"."created_at" ASC LIMIT $2[0m  [["id", 5], ["LIMIT", 1]]
+  [1m[36mStudentCourse Create (0.3ms)[0m  [1m[32mINSERT INTO "student_courses" ("student_id", "course_id", "status", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5) RETURNING "id"[0m  [["student_id", 23], ["course_id", 5], ["status", 1], ["created_at", "2024-01-10 19:24:33.505688"], ["updated_at", "2024-01-10 19:24:33.505688"]]
+  [1m[36mTRANSACTION (1.0ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mStudent Create (0.2ms)[0m  [1m[32mINSERT INTO "students" ("name", "created_at", "updated_at") VALUES ($1, $2, $3) RETURNING "id"[0m  [["name", "Amb. Benedict Flatley"], ["created_at", "2024-01-10 19:24:33.508786"], ["updated_at", "2024-01-10 19:24:33.508786"]]
+  [1m[36mTRANSACTION (1.0ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mCourse Load (0.1ms)[0m  [1m[34mSELECT "courses".* FROM "courses" WHERE "courses"."id" = $1 ORDER BY "courses"."created_at" ASC LIMIT $2[0m  [["id", 5], ["LIMIT", 1]]
+  [1m[36mStudentCourse Create (0.2ms)[0m  [1m[32mINSERT INTO "student_courses" ("student_id", "course_id", "status", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5) RETURNING "id"[0m  [["student_id", 24], ["course_id", 5], ["status", 1], ["created_at", "2024-01-10 19:24:33.514543"], ["updated_at", "2024-01-10 19:24:33.514543"]]
+  [1m[36mTRANSACTION (1.0ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mStudent Create (0.2ms)[0m  [1m[32mINSERT INTO "students" ("name", "created_at", "updated_at") VALUES ($1, $2, $3) RETURNING "id"[0m  [["name", "Benjamin Cartwright"], ["created_at", "2024-01-10 19:24:33.517490"], ["updated_at", "2024-01-10 19:24:33.517490"]]
+  [1m[36mTRANSACTION (1.0ms)[0m  [1m[35mCOMMIT[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[36mCourse Load (0.2ms)[0m  [1m[34mSELECT "courses".* FROM "courses" WHERE "courses"."id" = $1 ORDER BY "courses"."created_at" ASC LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mStudentCourse Create (0.2ms)[0m  [1m[32mINSERT INTO "student_courses" ("student_id", "course_id", "status", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5) RETURNING "id"[0m  [["student_id", 25], ["course_id", 1], ["status", 1], ["created_at", "2024-01-10 19:24:33.523268"], ["updated_at", "2024-01-10 19:24:33.523268"]]
+  [1m[36mTRANSACTION (1.0ms)[0m  [1m[35mCOMMIT[0m
+Started GET "/" for ::1 at 2024-01-10 23:24:54 +0400
+  [1m[35m (0.4ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Processing by Rails::WelcomeController#index as HTML
+  Rendering /home/amisha/.rvm/gems/ruby-2.7.2/gems/railties-6.1.4.1/lib/rails/templates/rails/welcome/index.html.erb
+  Rendered /home/amisha/.rvm/gems/ruby-2.7.2/gems/railties-6.1.4.1/lib/rails/templates/rails/welcome/index.html.erb (Duration: 12.7ms | Allocations: 417)
+Completed 200 OK in 20ms (Views: 15.4ms | ActiveRecord: 0.0ms | Allocations: 3525)
+
+
+Started GET "/admin/login" for ::1 at 2024-01-10 23:27:27 +0400
+  
+ActionController::RoutingError (No route matches [GET] "/admin/login"):
+  
